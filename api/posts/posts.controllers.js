@@ -1,9 +1,13 @@
 const Post = require("../../models/Post");
 
 exports.postsCreate = async (req, res) => {
+ if(req.file){
+  req.body.image = `http://localhost:8000/media/${req.file.filename}`;
+ }
   try {
-    const newPost = await Post.create(req.body);
-    res.status(201).json(newPost);
+    const newPost = new Post(req.body)
+    const savedPost = await newPost.save() ;
+    res.status(201).json(savedPost);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
